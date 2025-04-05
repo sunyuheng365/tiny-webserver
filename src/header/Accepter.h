@@ -19,7 +19,7 @@ class Accepter {
 public:
   explicit Accepter(EventLoop *loop, const InetAddress &addr,
                     int listen_n = LISTEN_MAX);
-  ~Accepter();
+  ~Accepter() = default;
 
   auto SetNewConnectionCallback(
       std::function<void(std::unique_ptr<Socket>)> callback) -> void;

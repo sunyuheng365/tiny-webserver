@@ -6,6 +6,7 @@
 #include "Channel.h"
 #include "const.h"
 #include <iostream>
+#include <regex>
 #include <unistd.h>
 
 Epoll::Epoll()
@@ -50,18 +51,26 @@ auto Epoll::RemoveChannel(Channel *channel) -> void {
 }
 
 auto Epoll::Start(int timeout) -> std::vector<Channel *> {
-  int n = epoll_wait(epoll_fd_, events_.get(), EPOLL_MAX_EVENTS, timeout);
-  if (n < 0) {
-    std::cerr << "epoll_wait() failed" << std::endl;
-    throw std::runtime_error("epoll_wait() failed");
+  while (true) {
+    int n = epoll_wait(epoll_fd_, events_.get(), EPOLL_MAX_EVENTS, timeout);
+    if (n < 0) {
+      if (errno == EINTR) {
+        continue;
+      }
+      std::cerr << "epoll_wait() failed" << std::endl;
+      std::cerr << errno << std::endl;
+      throw std::runtime_error("epoll_wait() failed");
+    }
+    if (n == 0) {
+      return {};
+    }
+    std::vector<Channel *> active_channels;
+    active_channels.reserve(n);
+    for (int i = 0; i < n; ++i) {
+      Channel *channel = static_cast<Channel *>(events_[i].data.ptr);
+      channel->SetReadyEvents(events_[i].events);
+      active_channels.emplace_back(channel);
+    }
+    return active_channels;
   }
-  if (n == 0) {
-    return {};
-  }
-  std::vector<Channel *> active_channels;
-  active_channels.reserve(n);
-  for (int i = 0; i < n; ++i) {
-    active_channels.emplace_back(static_cast<Channel *>(events_[i].data.ptr));
-  }
-  return active_channels;
 }

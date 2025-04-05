@@ -30,9 +30,9 @@ auto InetAddress::GetPort() const -> uint16_t {
 }
 
 auto InetAddress::GetSockaddr() -> sockaddr * {
-  return reinterpret_cast<sockaddr *>(&address_.sin_addr);
+  return reinterpret_cast<sockaddr *>(&address_);
 }
 
 auto InetAddress::GetSockaddr() const -> const sockaddr * {
-  return reinterpret_cast<const sockaddr *>(&address_.sin_addr);
+  return reinterpret_cast<const sockaddr *>(&address_);
 }

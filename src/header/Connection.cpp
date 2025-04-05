@@ -11,17 +11,23 @@
 Connection::Connection(EventLoop *loop, std::unique_ptr<Socket> socket)
     : event_loop_(loop), socket_(std::move(socket)),
       address_(
-          std::make_unique<InetAddress>(socket->GetIp(), socket->GetPort())),
-      channel_(std::make_unique<Channel>(loop, socket->GetFd())),
+          std::make_unique<InetAddress>(socket_->GetIp(), socket_->GetPort())),
+      channel_(std::make_unique<Channel>(event_loop_, socket_->GetFd())),
       send_buffer_(std::make_unique<Buffer>()) {
+
+  channel_->EnableRead();
   channel_->SetReadCallback([this]() {
     recv_buffer_ = std::make_unique<Buffer>();
-    RecvMessage();
-    message_callback_(shared_from_this(), std::move(recv_buffer_));
+    if (RecvMessage()) {
+      message_callback_(shared_from_this(), std::move(recv_buffer_));
+    }
   });
+  event_loop_->UpdateChannel(channel_.get());
 }
 
-Connection::~Connection() { event_loop_->RemoveChannel(channel_.get()); }
+auto Connection::RemvoeFromEpoll() -> void {
+  event_loop_->RemoveChannel(channel_.get());
+}
 
 auto Connection::GetFd() const -> int { return socket_->GetFd(); }
 
@@ -37,7 +43,7 @@ auto Connection::SendMessage(const Buffer &buf) -> void {
   int size = buf.Size();
   const char *data = buf.Data();
   while (size > 0) {
-    ssize_t n = send(socket_->GetFd(), data, size, 0);
+    ssize_t n = ::send(socket_->GetFd(), data, size, 0);
     if (n < 0) {
       if (errno == EINTR) {
         continue;
@@ -53,7 +59,7 @@ auto Connection::SendMessage(const Buffer &buf) -> void {
   }
 }
 
-auto Connection::RecvMessage() -> void {
+auto Connection::RecvMessage() -> bool {
   char buf[TCP_SERVER_MAX_RECV];
   while (true) {
     int len =
@@ -66,7 +72,7 @@ auto Connection::RecvMessage() -> void {
     // 读完了
     if (len < 0) {
       if (errno == EAGAIN || errno == EWOULDBLOCK) {
-        break;
+        return true;
       }
       if (errno == EINTR) {
         continue;
@@ -74,7 +80,7 @@ auto Connection::RecvMessage() -> void {
     }
     // len == 0 || len < 0 And errno Invaild
     close_callback_(shared_from_this());
-    break;
+    return false;
   }
 }
 

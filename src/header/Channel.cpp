@@ -10,8 +10,6 @@
 Channel::Channel(EventLoop *loop, int fd)
     : loop_(loop), fd_(fd), events_(0), ready_events_(0), in_epoll_(false) {}
 
-Channel::~Channel() { loop_->RemoveChannel(this); }
-
 auto Channel::SetReadCallback(std::function<void()> callback) -> void {
   read_callback_ = std::move(callback);
 }

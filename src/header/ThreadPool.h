@@ -16,15 +16,27 @@ public:
   // static ThreadPool &GetThreadPool();
 
   explicit ThreadPool(unsigned int num = std::thread::hardware_concurrency());
+  ~ThreadPool();
 
   template <class F, class... Args>
-  auto commit(F &&f, Args &&...args)
-      -> std::future<decltype(std::forward<F>(f)(std::forward<Args>(args)...))>;
+  auto commit(F &&f, Args &&...args) -> std::future<
+      decltype(std::forward<F>(f)(std::forward<Args>(args)...))> {
+    using ReturnType =
+        decltype(std::forward<F>(f)(std::forward<Args>(args)...));
+
+    auto task = std::make_shared<std::packaged_task<ReturnType()>>(
+        std::bind(std::forward<F>(f), std::forward<Args>(args)...));
+    std::future<ReturnType> ret = task->get_future();
+    {
+      std::unique_lock cv_lock(cv_mtx_);
+      tasks_.emplace([task]() { (*task)(); });
+      cv_.notify_one();
+    }
+    return ret;
+  }
 
 private:
   using Task = std::function<void()>;
-
-  ~ThreadPool();
 
   auto start() -> void;
 

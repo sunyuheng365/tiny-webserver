@@ -4,27 +4,6 @@
 
 #include "ThreadPool.h"
 
-// ThreadPool &ThreadPool::GetThreadPool() {
-//   static ThreadPool thread_pool;
-//   return thread_pool;
-// }
-
-template <class F, class... Args>
-auto ThreadPool::commit(F &&f, Args &&...args)
-    -> std::future<decltype(std::forward<F>(f)(std::forward<Args>(args)...))> {
-  using ReturnType = decltype(std::forward<F>(f)(std::forward<Args>(args)...));
-
-  auto task = std::make_shared<std::packaged_task<ReturnType()>>(
-      std::bind(std::forward<F>(f), std::forward<Args>(args)...));
-  std::future<ReturnType> ret = task->get_future();
-  {
-    std::unique_lock cv_lock(cv_mtx_);
-    tasks_.emplace([task]() { (*task)(); });
-    cv_.notify_one();
-  }
-  return ret;
-}
-
 ThreadPool::ThreadPool(unsigned int num)
     : thread_num_(static_cast<int>(num)), stop_(false) {
   start();

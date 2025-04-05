@@ -12,7 +12,7 @@ class EventLoop;
 class Channel {
 public:
   Channel(EventLoop *loop, int fd);
-  ~Channel();
+  ~Channel() = default;
 
   // 回调函数
   auto SetReadCallback(std::function<void()> callback) -> void;

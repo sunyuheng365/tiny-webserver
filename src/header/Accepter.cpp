@@ -15,13 +15,13 @@ Accepter::Accepter(EventLoop *loop, const InetAddress &addr, int listen_n)
   socket_->SetIpAndPort(addr);
   socket_->Bind(addr);
   socket_->Listen(listen_n);
+  socket_->SetNonBlocking();
   channel_ = std::make_unique<Channel>(loop_, socket_->GetFd());
   channel_->EnableRead();
   channel_->EnableET();
   channel_->SetReadCallback([this]() { AcceptConnection(); });
+  loop_->UpdateChannel(channel_.get());
 }
-
-Accepter::~Accepter() { loop_->RemoveChannel(channel_.get()); }
 
 auto Accepter::SetNewConnectionCallback(
     std::function<void(std::unique_ptr<Socket>)> callback) -> void {
@@ -48,6 +48,8 @@ auto Accepter::AcceptConnection() -> void {
       std::unique_ptr<Socket> socket = std::make_unique<Socket>(client_fd);
       socket->SetIpAndPort(new_address);
       new_connection_callback_(std::move(socket));
+      static int x = 0;
+      std::cerr << "New connection." << x++ << std::endl;
     }
   }
 }

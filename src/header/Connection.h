@@ -5,6 +5,10 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 
+#include "Buffer.h"
+#include "Channel.h"
+#include "InetAddress.h"
+#include "Socket.h"
 #include <functional>
 #include <memory>
 
@@ -17,8 +21,9 @@ class Buffer;
 class Connection : public std::enable_shared_from_this<Connection> {
 public:
   Connection(EventLoop *loop, std::unique_ptr<Socket> socket);
-  ~Connection();
+  ~Connection() = default;
 
+  auto RemvoeFromEpoll() -> void;
   auto GetFd() const -> int;
   auto GetInetAddress() const -> InetAddress *;
   auto GetIp() -> std::string;
@@ -27,12 +32,13 @@ public:
   // 缓存到 write_buffer 然后发送
   auto SendMessage(const Buffer &buf) -> void;
   // 接收到 read_buffer 然后调用回调函数
-  auto RecvMessage() -> void;
+  auto RecvMessage() -> bool;
 
   auto SetMessageCallback(
       std::function<void(std::shared_ptr<Connection>, std::unique_ptr<Buffer>)>
           callback) -> void;
-  auto SetCloseCallback(std::function<void(std::shared_ptr<Connection>)>)
+  auto
+  SetCloseCallback(std::function<void(std::shared_ptr<Connection>)> callback)
       -> void;
 
 private:
