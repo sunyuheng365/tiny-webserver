@@ -4,6 +4,8 @@
 
 #include "InetAddress.h"
 
+#include "../log/Log.h"
+
 #include <iostream>
 
 #include <arpa/inet.h>
@@ -13,7 +15,7 @@ InetAddress::InetAddress(const std::string &ip, uint16_t port) {
   address_.sin_family = AF_INET;
   address_.sin_port = htons(port);
   if (inet_pton(AF_INET, ip.c_str(), &address_.sin_addr) < 0) {
-    std::cerr << "Address conversion failed." << std::endl;
+    LOG_ERROR("Address conversion failed, error is :{}", errno);
   }
 }
 

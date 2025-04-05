@@ -4,6 +4,8 @@
 
 #include "Socket.h"
 
+#include "../log/Log.h"
+
 #include <iostream>
 
 #include <ostream>
@@ -13,13 +15,13 @@
 Socket::Socket() {
   fd_ = socket(AF_INET, SOCK_STREAM, 0);
   if (fd_ < 0) {
-    std::cerr << "Socket creation failed." << std::endl;
+    LOG_ERROR("Socket creation failed, errno is :{}", errno);
   }
 }
 Socket::Socket(int socket_fd) {
   fd_ = socket_fd;
   if (fd_ < 0) {
-    std::cerr << "Socket creation failed." << std::endl;
+    LOG_ERROR("Socket creation failed, Invalid socket_fd :{}", fd_);
   }
 }
 
@@ -27,7 +29,7 @@ Socket::~Socket() { Close(); }
 
 auto Socket::Listen(int n) -> bool {
   if (::listen(fd_, n) < 0) {
-    std::cerr << "Failed to listen on socket" << std::endl;
+    LOG_ERROR("Socket listen failed, errno is :{}", errno);
     return false;
   }
   return true;
@@ -35,7 +37,7 @@ auto Socket::Listen(int n) -> bool {
 
 auto Socket::Connect(const InetAddress &address) -> bool {
   if (::connect(fd_, address.GetSockaddr(), sizeof(sockaddr)) < 0) {
-    std::cerr << "Failed to connect on socket" << std::endl;
+    LOG_ERROR("Socket connect failed, errno is :{}", errno);
     return false;
   }
   return true;
@@ -43,7 +45,7 @@ auto Socket::Connect(const InetAddress &address) -> bool {
 
 auto Socket::Bind(const InetAddress &address) -> bool {
   if (::bind(fd_, address.GetSockaddr(), sizeof(sockaddr)) < 0) {
-    std::cerr << "Failed to bind on socket" << std::endl;
+    LOG_ERROR("Socket bind failed, errno is :{}", errno);
     return false;
   }
   return true;
@@ -62,7 +64,7 @@ auto Socket::Accept(InetAddress &address) -> int {
   socklen_t addrlen = sizeof(sockaddr);
   int connfd = ::accept(fd_, address.GetSockaddr(), &addrlen);
   if (connfd < 0) {
-    std::cerr << "Failed to accept on socket" << std::endl;
+    LOG_ERROR("Socket accept failed, errno is :{}", errno);
     return -1;
   }
   return connfd;
@@ -82,12 +84,12 @@ auto Socket::GetPort() const -> uint16_t { return port_; }
 auto Socket::SetNonBlocking() -> bool {
   int flags = fcntl(fd_, F_GETFL, 0);
   if (flags < 0) {
-    std::cerr << "Failed to get socket flags" << std::endl;
+    LOG_ERROR("fcntl failed, errno is :{}", errno);
     return false;
   }
 
   if (fcntl(fd_, F_SETFL, flags | O_NONBLOCK) < 0) {
-    std::cerr << "Failed to set socket flags" << std::endl;
+    LOG_ERROR("fcntl failed, errno is :{}", errno);
     return false;
   }
 
@@ -97,7 +99,7 @@ auto Socket::SetNonBlocking() -> bool {
 auto Socket::SetReuseAddr() -> bool {
   int optval = 1;
   if (setsockopt(fd_, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0) {
-    std::cerr << "Failed to set socket options" << std::endl;
+    LOG_ERROR("setsockopt failed, errno is :{}", errno);
     return false;
   }
   return true;
@@ -106,7 +108,7 @@ auto Socket::SetReuseAddr() -> bool {
 auto Socket::SetReusePort() -> bool {
   int optval = 1;
   if (setsockopt(fd_, SOL_SOCKET, SO_REUSEPORT, &optval, sizeof(optval)) < 0) {
-    std::cerr << "Failed to set socket options" << std::endl;
+    LOG_ERROR("setsockopt failed, errno is :{}", errno);
     return false;
   }
   return true;
@@ -115,7 +117,7 @@ auto Socket::SetReusePort() -> bool {
 auto Socket::SetKeepAlive() -> bool {
   int optval = 1;
   if (setsockopt(fd_, SOL_SOCKET, SO_KEEPALIVE, &optval, sizeof(optval)) < 0) {
-    std::cerr << "setsockopt(SO_KEEPALIVE)" << std::endl;
+    LOG_ERROR("setsockopt failed, errno is :{}", errno);
     return false;
   }
   return true;
@@ -124,7 +126,7 @@ auto Socket::SetKeepAlive() -> bool {
 auto Socket::SetTcpNoDelay() -> bool {
   int optval = 1;
   if (setsockopt(fd_, IPPROTO_TCP, TCP_NODELAY, &optval, sizeof(optval)) < 0) {
-    std::cerr << "setsockopt(TCP_NODELAY)" << std::endl;
+    LOG_ERROR("setsockopt failed, errno is :{}", errno);
     return false;
   }
   return true;

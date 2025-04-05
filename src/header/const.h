@@ -7,7 +7,7 @@
 
 constexpr int TCP_SERVER_MAX_RECV = 1024;
 
-constexpr int LISTEN_MAX = 128; // 用于 ::listen() 中设置半+全连接队列数量
+constexpr int LISTEN_MAX = 65536; // 用于 ::listen() 中设置半+全连接队列数量
 
 constexpr int EPOLL_MAX_EVENTS = 65536;
 

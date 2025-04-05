@@ -38,6 +38,8 @@ private:
   std::map<int, std::shared_ptr<Connection>> connections_map_;
   std::unique_ptr<ThreadPool> thread_pool_;
   std::vector<std::unique_ptr<ReactorSubServer>> sub_servers_;
+  // sub_servers 会和 main_servers 抢占 std::map, 需要上锁来保护 map
+  std::mutex mutex_;
 
   std::function<void(std::shared_ptr<Connection>, std::unique_ptr<Buffer>)>
       message_callback_;

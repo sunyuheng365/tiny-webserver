@@ -3,6 +3,7 @@
 //
 
 #include "Connection.h"
+#include "../log/Log.h"
 #include "Buffer.h"
 #include "Channel.h"
 #include "EventLoop.h"
@@ -51,6 +52,7 @@ auto Connection::SendMessage(const Buffer &buf) -> void {
       if (errno == EAGAIN || errno == EWOULDBLOCK) {
         break;
       }
+      LOG_ERROR("Connection::SendMessage Failed , errno is :{}", errno);
       close_callback_(shared_from_this());
       return;
     }
@@ -77,8 +79,12 @@ auto Connection::RecvMessage() -> bool {
       if (errno == EINTR) {
         continue;
       }
+      LOG_ERROR("Connection::RecvMessage Failed , errno is :{}", errno);
+      close_callback_(shared_from_this());
+      return false;
     }
-    // len == 0 || len < 0 And errno Invaild
+    // len == 0
+    LOG_INFO("Client Close Socket.");
     close_callback_(shared_from_this());
     return false;
   }

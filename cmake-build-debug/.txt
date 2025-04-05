@@ -1,0 +1,26 @@
+cmake_minimum_required(VERSION 3.30)
+project(tiny_webserver)
+
+set(CMAKE_CXX_STANDARD 20)
+
+add_executable(client
+        src/client/TcpClient.cpp
+        src/client/TcpClient.h
+        src/common/const.h
+        src/client/main.cpp
+)
+
+add_executable(server
+        src/server/TcpServer.cpp
+        src/server/TcpServer.h
+        src/server/main.cpp
+        src/common/const.h
+)
+
+add_executable(filesent
+        filesent.cpp
+)
+
+add_executable(filerecv
+        filerecv.cpp
+)

@@ -8,10 +8,10 @@
 
 int main() {
   ReactorMainServer server(InetAddress{"127.0.0.1", 5050}, 2);
-  int cnt = 0;
+  std::atomic<int> cnt = 0;
   server.SetMessageCallback([&cnt](std::shared_ptr<Connection> connection,
-                               std::unique_ptr<Buffer> buffer) {
-    Buffer buf{std::string("Echo: ") + std::to_string(cnt++) + "\r\n", };
+                                   std::unique_ptr<Buffer> buffer) {
+    Buffer buf{std::string("Echo: ") + std::to_string(++cnt) + " "};
     buf.Append(buffer->RecvAsStringAll());
     connection->SendMessage(buf);
   });

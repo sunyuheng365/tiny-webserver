@@ -26,12 +26,14 @@ ReactorMainServer::ReactorMainServer(const InetAddress &address,
         std::make_unique<ReactorSubServer>(thread_pool_.get()));
     sub_servers_[i]->SetAcceptCallback(
         [this](std::shared_ptr<Connection> connection) {
+          std::lock_guard lock(mutex_);
           this->connections_map_.insert(
               std::make_pair(connection->GetFd(), connection));
         });
     sub_servers_[i]->SetCloseCallback(
         [this](std::shared_ptr<Connection> connection) {
           connection->RemvoeFromEpoll();
+          std::lock_guard lock(mutex_);
           this->connections_map_.erase(connection->GetFd());
         });
   }

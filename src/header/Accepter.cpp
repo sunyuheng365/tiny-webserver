@@ -4,6 +4,7 @@
 
 #include "Accepter.h"
 
+#include "../log/Log.h"
 #include "Channel.h"
 #include "EventLoop.h"
 #include "Socket.h"
@@ -16,6 +17,7 @@ Accepter::Accepter(EventLoop *loop, const InetAddress &addr, int listen_n)
   socket_->Bind(addr);
   socket_->Listen(listen_n);
   socket_->SetNonBlocking();
+  socket_->SetReuseAddr();
   channel_ = std::make_unique<Channel>(loop_, socket_->GetFd());
   channel_->EnableRead();
   channel_->EnableET();
@@ -41,7 +43,7 @@ auto Accepter::AcceptConnection() -> void {
       if (errno == EAGAIN || errno == EWOULDBLOCK) {
         break;
       }
-      std::cerr << "Accept failed." << std::endl;
+      LOG_ERROR("Accepter::AcceptConnection() failed, errno is : ", errno);
       break;
     }
     if (new_connection_callback_ != nullptr) {
@@ -49,7 +51,7 @@ auto Accepter::AcceptConnection() -> void {
       socket->SetIpAndPort(new_address);
       new_connection_callback_(std::move(socket));
       static int x = 0;
-      std::cerr << "New connection." << x++ << std::endl;
+      LOG_INFO("New connection :{}.", ++x);
     }
   }
 }

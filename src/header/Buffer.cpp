@@ -4,6 +4,8 @@
 
 #include "Buffer.h"
 
+#include "../log/Log.h"
+
 #include <iostream>
 
 auto Buffer::Append(const char *ptr, int len) -> void {
@@ -12,7 +14,8 @@ auto Buffer::Append(const char *ptr, int len) -> void {
 
 auto Buffer::RecvAsString(int len) -> std::string {
   if (len > static_cast<int>(buffer_.size())) {
-    std::cerr << "Bad RecvAsString Using" << buffer_.size() << std::endl;
+    LOG_ERROR("Bad RecvAsString need : {}, but size is {}", len,
+              buffer_.size());
     return RecvAsStringAll();
   }
   std::string result{buffer_.begin(), buffer_.begin() + len};

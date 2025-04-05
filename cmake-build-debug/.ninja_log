@@ -1,0 +1,19 @@
+# ninja log v6
+2011	3277	1743854776171968298	CMakeFiles/tiny-webserver.dir/src/header/Socket.cpp.o	58ff55ea44a5ab9c
+1098	1729	1743841799435667436	CMakeFiles/tiny-webserver.dir/src/header/EventLoop.cpp.o	7bd17fc9013466d9
+1452	2513	1743843571820390889	CMakeFiles/tiny-webserver.dir/src/header/ReactorSubServer.cpp.o	81bd94f37770b661
+2	1132	1743838584775662659	CMakeFiles/tiny-webserver.dir/src/header/ThreadPool.cpp.o	acba4aa4c647fd65
+1253	1362	1743855611945231695	tiny-webserver	e257957432ecb812
+2054	3270	1743854776213967511	CMakeFiles/tiny-webserver.dir/src/header/Buffer.cpp.o	bf36cdb1d36494f3
+2	1201	1743855071961243874	CMakeFiles/tiny-webserver.dir/src/header/Connection.cpp.o	e3fb88cb8c8ff64e
+3	2157	1743854774163005950	CMakeFiles/tiny-webserver.dir/src/header/Epoll.cpp.o	3b2ae6b319597bb6
+1100	1166	1743852417089706046	log_test	770ae588bb8610a
+470	552	1743854843713691353	client	cb25a6bb912b4741
+2	1253	1743855610694257682	CMakeFiles/tiny-webserver.dir/src/header/Accepter.cpp.o	2bead371e38ca9a7
+2	1223	1743855477521014801	CMakeFiles/tiny-webserver.dir/src/server/EchoServer.cpp.o	7294752215a5f24e
+2	470	1743854843245700272	CMakeFiles/client.dir/src/client/EchoClient.cpp.o	24f3c37dd944ea83
+2	1657	1743844016999062599	CMakeFiles/tiny-webserver.dir/src/header/ReactorMainServer.cpp.o	e8b206043da4b653
+1852	3094	1743854776012971279	CMakeFiles/tiny-webserver.dir/src/header/InetAddress.cpp.o	6a0d5147725fcac2
+2	1100	1743852415991736089	CMakeFiles/log_test.dir/test/log/log_tester.cpp.o	7a217d5ebc24602e
+1	33	1743860875363530948	build.ninja	b1a0ad87fb4ac535
+4	864	1743841798342689268	CMakeFiles/tiny-webserver.dir/src/header/Channel.cpp.o	d99e9567346e7e7

@@ -3,8 +3,10 @@
 //
 
 #include "Epoll.h"
+#include "../log/Log.h"
 #include "Channel.h"
 #include "const.h"
+
 #include <iostream>
 #include <regex>
 #include <unistd.h>
@@ -13,7 +15,7 @@ Epoll::Epoll()
     : epoll_fd_(epoll_create1(EPOLL_CLOEXEC)),
       events_(std::make_unique<epoll_event[]>(EPOLL_MAX_EVENTS)) {
   if (epoll_fd_ < 0) {
-    std::cerr << "epoll_create1() failed" << std::endl;
+    LOG_ERROR("Epoll::epoll_create1() failed, errno is: {}", errno);
     throw std::runtime_error("epoll_create1() failed");
   }
 }
@@ -30,12 +32,12 @@ auto Epoll::UpdateChannel(Channel *channel) -> void {
   epoll_event event{channel->GetEvents(), channel};
   if (channel->IsInEpoll()) {
     if (epoll_ctl(epoll_fd_, EPOLL_CTL_MOD, fd, &event) < 0) {
-      std::cerr << "epoll_ctl() failed" << std::endl;
+      LOG_ERROR("Epoll::UpdateChannel : epoll_ctl() failed, errno: {}", errno);
       throw std::runtime_error("epoll_ctl() failed");
     }
   } else {
     if (epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, fd, &event) < 0) {
-      std::cerr << "epoll_ctl() failed" << std::endl;
+      LOG_ERROR("Epoll::UpdateChannel : epoll_ctl() failed, errno: {}", errno);
       throw std::runtime_error("epoll_ctl() failed");
     }
     channel->EnableInEpoll();
@@ -45,7 +47,7 @@ auto Epoll::UpdateChannel(Channel *channel) -> void {
 auto Epoll::RemoveChannel(Channel *channel) -> void {
   int fd = channel->GetFd();
   if (epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, fd, nullptr) < 0) {
-    std::cerr << "epoll_ctl() failed" << std::endl;
+    LOG_ERROR("Epoll::RemoveChannel : epoll_ctl() failed, errno: {}", errno);
     throw std::runtime_error("epoll_ctl() failed");
   }
 }
@@ -57,8 +59,7 @@ auto Epoll::Start(int timeout) -> std::vector<Channel *> {
       if (errno == EINTR) {
         continue;
       }
-      std::cerr << "epoll_wait() failed" << std::endl;
-      std::cerr << errno << std::endl;
+      LOG_ERROR("Epoll::Start : epoll_wait() failed, errno: {}", errno);
       throw std::runtime_error("epoll_wait() failed");
     }
     if (n == 0) {
