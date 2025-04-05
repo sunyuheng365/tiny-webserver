@@ -26,8 +26,11 @@ add_executable(tiny-webserver
         src/header/Buffer.h
         src/header/ReactorMainServer.cpp
         src/header/ReactorMainServer.h
-        src/header/ReactorFollowServer.cpp
-        src/header/ReactorFollowServer.h
+        src/header/ReactorSubServer.cpp
+        src/header/ReactorSubServer.h
 
 )
 
+add_executable(client
+        src/client/main.cpp
+)
