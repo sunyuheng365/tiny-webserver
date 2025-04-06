@@ -1,0 +1,4 @@
+/home/sunyuheng365/.cache/JetBrains/RemoteDev/dist/c0d814f62eb66_CLion-2024.3.4/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/sunyuheng365/.cache/JetBrains/RemoteDev/dist/c0d814f62eb66_CLion-2024.3.4/bin/ninja/linux/x64/ninja --profiling-format=google-trace --profiling-output=CMakeFiles/clion-event-trace.json -G Ninja -S /home/sunyuheng365/CLionProjects/tiny-webserver -B /home/sunyuheng365/CLionProjects/tiny-webserver/cmake-build-debug-event-trace
+-- Configuring done (0.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/sunyuheng365/CLionProjects/tiny-webserver/cmake-build-debug-event-trace

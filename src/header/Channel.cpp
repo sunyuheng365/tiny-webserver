@@ -89,12 +89,13 @@ auto Channel::HandleEvent() -> void {
   if (ready_events_ & (EPOLLIN | EPOLLPRI)) {
     if (read_callback_ != nullptr) {
       read_callback_();
+      // return;
     }
   }
   // 有需要输出
-  if (ready_events_ & EPOLLOUT) {
-    if (write_callback_ != nullptr) {
-      write_callback_();
-    }
-  }
+  // if (ready_events_ & EPOLLOUT) {
+  // if (write_callback_ != nullptr) {
+  // write_callback_();
+  // }
+  // }
 }

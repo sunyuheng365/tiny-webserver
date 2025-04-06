@@ -1,0 +1,6 @@
+/home/sunyuheng365/CLionProjects/tiny-webserver/cmake-build-debug-event-trace/CMakeFiles/tiny-webserver.dir
+/home/sunyuheng365/CLionProjects/tiny-webserver/cmake-build-debug-event-trace/CMakeFiles/http_server.dir
+/home/sunyuheng365/CLionProjects/tiny-webserver/cmake-build-debug-event-trace/CMakeFiles/client.dir
+/home/sunyuheng365/CLionProjects/tiny-webserver/cmake-build-debug-event-trace/CMakeFiles/log_test.dir
+/home/sunyuheng365/CLionProjects/tiny-webserver/cmake-build-debug-event-trace/CMakeFiles/edit_cache.dir
+/home/sunyuheng365/CLionProjects/tiny-webserver/cmake-build-debug-event-trace/CMakeFiles/rebuild_cache.dir

@@ -5,11 +5,19 @@
 #ifndef LOG_H
 #define LOG_H
 
+/*
 #define LOG_DEBUG(...) Log::GetLogger().LogMessage(LogLevel::DEBUG, __VA_ARGS__)
 #define LOG_INFO(...) Log::GetLogger().LogMessage(LogLevel::INFO, __VA_ARGS__)
 #define LOG_WARN(...)                                                          \
   Log::GetLogger().LogMessage(LogLevel::WARNING, __VA_ARGS__)
 #define LOG_ERROR(...) Log::GetLogger().LogMessage(LogLevel::ERROR, __VA_ARGS__)
+*/
+#define LOG_DEBUG(...) (__VA_ARGS__)
+#define LOG_INFO(...) (__VA_ARGS__)
+#define LOG_WARN(...)                                                          \
+(__VA_ARGS__)
+#define LOG_ERROR(...) (__VA_ARGS__)
+
 
 #include <atomic>
 #include <condition_variable>

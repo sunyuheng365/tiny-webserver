@@ -58,6 +58,12 @@ add_executable(http_server
         src/header/ReactorSubServer.cpp
         src/header/ReactorSubServer.h
         src/log/Log.h
+        src/http/HttpContext.h
+        src/http/HttpContext.cpp
+        src/http/HttpRequest.h
+        src/http/HttpRequest.cpp
+        src/http/HttpResponse.cpp
+        src/http/HttpResponse.h
 )
 
 add_executable(client

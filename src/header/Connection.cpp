@@ -59,6 +59,7 @@ auto Connection::SendMessage(const Buffer &buf) -> void {
     data += n;
     size -= static_cast<int>(n);
   }
+  close_callback_(shared_from_this());
 }
 
 auto Connection::RecvMessage() -> bool {
