@@ -35,4 +35,4 @@ auto ReactorSubServer::AcceptConnection(std::unique_ptr<Socket> socket)
   accept_callback_(connection);
 }
 
-auto ReactorSubServer::Start() -> void { loop_->Loop(); }
+auto ReactorSubServer::Start() -> void { loop_->Loop(thread_pool_); }

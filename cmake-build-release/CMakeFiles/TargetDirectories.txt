@@ -1,0 +1,6 @@
+/home/sunyuheng365/CLionProjects/tiny-webserver/cmake-build-release/CMakeFiles/tiny-webserver.dir
+/home/sunyuheng365/CLionProjects/tiny-webserver/cmake-build-release/CMakeFiles/http_server.dir
+/home/sunyuheng365/CLionProjects/tiny-webserver/cmake-build-release/CMakeFiles/client.dir
+/home/sunyuheng365/CLionProjects/tiny-webserver/cmake-build-release/CMakeFiles/log_test.dir
+/home/sunyuheng365/CLionProjects/tiny-webserver/cmake-build-release/CMakeFiles/edit_cache.dir
+/home/sunyuheng365/CLionProjects/tiny-webserver/cmake-build-release/CMakeFiles/rebuild_cache.dir

@@ -49,7 +49,7 @@ std::unique_ptr<HttpResponse> Repaly(HttpRequest *request) {
 }
 
 int main() {
-  ReactorMainServer server(InetAddress{"0.0.0.0", 1234}, 4);
+  ReactorMainServer server(InetAddress{"0.0.0.0", 1234}, 1);
   // std::atomic<int> cnt = 0;
 
   server.SetMessageCallback([](std::shared_ptr<Connection> connection,

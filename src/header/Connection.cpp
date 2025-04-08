@@ -15,15 +15,22 @@ Connection::Connection(EventLoop *loop, std::unique_ptr<Socket> socket)
           std::make_unique<InetAddress>(socket_->GetIp(), socket_->GetPort())),
       channel_(std::make_unique<Channel>(event_loop_, socket_->GetFd())),
       send_buffer_(std::make_unique<Buffer>()) {
+  //
+  // channel_->EnableRead();
+  // channel_->EnableET();
+  // channel_->SetOneShot(true);
 
-  channel_->EnableRead();
+  channel_->Reset(EPOLLIN | EPOLLPRI | EPOLLET | EPOLLONESHOT);
+
   channel_->SetReadCallback([this]() {
     recv_buffer_ = std::make_unique<Buffer>();
     if (RecvMessage()) {
       message_callback_(shared_from_this(), std::move(recv_buffer_));
+      // close
+      return;
     }
+    // channel_->SetOneShot(false);
   });
-  event_loop_->UpdateChannel(channel_.get());
 }
 
 auto Connection::RemvoeFromEpoll() -> void {
@@ -65,8 +72,7 @@ auto Connection::SendMessage(const Buffer &buf) -> void {
 auto Connection::RecvMessage() -> bool {
   char buf[TCP_SERVER_MAX_RECV];
   while (true) {
-    int len =
-        static_cast<int>(::recv(socket_->GetFd(), buf, TCP_SERVER_MAX_RECV, 0));
+    ssize_t len = ::recv(socket_->GetFd(), buf, TCP_SERVER_MAX_RECV, 0);
     // 正在读
     if (len > 0) {
       recv_buffer_->Append(buf, len);

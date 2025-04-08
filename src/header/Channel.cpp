@@ -40,6 +40,20 @@ auto Channel::IsInEpoll() const -> bool { return in_epoll_; }
 
 auto Channel::EnableInEpoll() -> void { in_epoll_ = true; }
 
+auto Channel::SetOneShot(bool flag) -> void {
+  if (flag) {
+    events_ |= EPOLLONESHOT;
+  } else {
+    events_ &= ~EPOLLONESHOT;
+  }
+  loop_->UpdateChannel(this);
+}
+
+auto Channel::Reset(uint32_t events) -> void {
+  events_ = events;
+  loop_->UpdateChannel(this);
+}
+
 auto Channel::EnableRead() -> void {
   events_ |= EPOLLIN | EPOLLPRI;
   loop_->UpdateChannel(this);

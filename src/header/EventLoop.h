@@ -5,6 +5,7 @@
 #ifndef EVENTLOOP_H
 #define EVENTLOOP_H
 #include "Epoll.h"
+#include "ThreadPool.h"
 
 class EventLoop {
 public:
@@ -12,6 +13,7 @@ public:
   ~EventLoop();
 
   auto Loop() -> void;
+  auto Loop(ThreadPool *thread_pool) -> void;
   auto UpdateChannel(Channel *channel) -> void;
   auto RemoveChannel(Channel *channel) -> void;
 

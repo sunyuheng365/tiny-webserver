@@ -28,7 +28,10 @@ public:
   auto IsInEpoll() const -> bool;
   auto EnableInEpoll()
       -> void; // 一个 Channel 只会加一次 Epoll, 所以关闭后就让它死亡
+  auto SetOneShot(bool flag) -> void;
 
+
+  auto Reset(uint32_t events_) -> void;
   // 修改属性
   auto EnableRead() -> void;
   auto DisableRead() -> void;

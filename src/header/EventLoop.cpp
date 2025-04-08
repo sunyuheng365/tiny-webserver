@@ -18,6 +18,15 @@ auto EventLoop::Loop() -> void {
   }
 }
 
+auto EventLoop::Loop(ThreadPool *thread_pool) -> void {
+  while (true) {
+    for (Channel *active_channel : epoll_->Start()) {
+      thread_pool->commit(
+          [active_channel]() { active_channel->HandleEvent(); });
+    }
+  }
+}
+
 auto EventLoop::UpdateChannel(Channel *channel) -> void {
   epoll_->UpdateChannel(channel);
 }
